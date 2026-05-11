@@ -1,0 +1,68 @@
+name: Deploy to AWS Amplify
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Print AWS Info (optional debug)
+        run: |
+          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+          echo "AWS_REGION: $AWS_REGION"
+          echo "AWS_AMPLIFY_APP_ID: d2vbsngc5phofp"
+          echo "AWS_AMPLIFY_BRANCH_NAME: develop"
+          echo "AWS_AMPLIFY_JOB_TYPE: RELEASE"
+
+      - name: Trigger Amplify Deploy and Wait for Completion
+        env:
+          APP_ID: d2vbsngc5phofp
+          BRANCH_NAME: develop
+        run: |
+          # Start the job and capture the job ID
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$APP_ID" \
+            --branch-name "$BRANCH_NAME" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          echo "Triggered Amplify job: $JOB_ID"
+
+          # Poll for job status
+          STATUS="PENDING"
+          while [[ "$STATUS" == "PENDING" || "$STATUS" == "RUNNING" ]]; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$APP_ID" \
+              --branch-name "$BRANCH_NAME" \
+              --job-id "$JOB_ID" \
+              --query 'job.summary.status' \
+              --output text)
+            echo "Job status: $STATUS"
+            sleep 10
+          done
+
+          # Output result
+          if [[ "$STATUS" == "SUCCEED" ]]; then
+            echo "Amplify deploy succeeded!"
+          else
+            echo "Amplify deploy finished with status: $STATUS"
+            exit 1
+          fi
+
+          # Print URL for the job in Amplify Console (optional)
+          echo "View job: https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/d$APP_ID/$BRANCH_NAME/$JOB_ID"

@@ -1,0 +1,42 @@
+.loyalty-layout {
+  display: flex;
+  height: 100vh;
+  background: #181e26;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.loyalty-layout__sidebar {
+  width: 220px;
+  background: #1676fa;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
+.loyalty-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.loyalty-layout__navbar {
+  background: #409eff;
+  color: #fff;
+  padding: 24px 0;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.loyalty-layout__content {
+  flex: 1;
+  background: #0d53ce;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
