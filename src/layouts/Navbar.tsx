@@ -25,6 +25,7 @@ export const Navbar = () => {
           <div className="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest">
             <Link to="/" className="hover:text-gray-500 transition">Shop</Link>
             <Link to="/collections" className="hover:text-gray-500 transition">Collections</Link>
+            <Link to="/style-advisor" className="hover:text-gray-500 transition">AI Advisor</Link>
             <Link to="/about" className="hover:text-gray-500 transition">About</Link>
           </div>
 
@@ -47,6 +48,7 @@ export const Navbar = () => {
         <div className="md:hidden fixed inset-0 top-16 bg-white z-40 p-6 flex flex-col space-y-6 text-lg uppercase font-medium">
           <Link to="/" onClick={() => setIsOpen(false)} className="hover:text-gray-500 transition">Shop</Link>
           <Link to="/collections" onClick={() => setIsOpen(false)} className="hover:text-gray-500 transition">Collections</Link>
+          <Link to="/style-advisor" onClick={() => setIsOpen(false)} className="hover:text-gray-500 transition">AI Advisor</Link>
           <Link to="/about" onClick={() => setIsOpen(false)} className="hover:text-gray-500 transition">About</Link>
           <Link to="/checkout" onClick={() => setIsOpen(false)} className="hover:text-gray-500 transition">Cart ({totalItems})</Link>
         </div>

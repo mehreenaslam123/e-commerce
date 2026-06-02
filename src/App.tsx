@@ -8,6 +8,7 @@ import { ProductDetail } from "./pages/ProductDetail";
 import { Checkout } from "./pages/Checkout";
 import { Collections } from "./pages/Collections";
 import { About } from "./pages/About";
+import { StyleAdvisor } from "./pages/StyleAdvisor";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/collections" element={<Collections />} />
+      <Route path="/style-advisor" element={<StyleAdvisor />} />
       <Route path="/about" element={<About />} />
       
       {/* Existing Routes */}

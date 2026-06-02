@@ -39,6 +39,26 @@ pnpm dev
 pnpm build
 ```
 
+### AI Stylist Setup
+
+Create a `.env` file in the project root:
+
+```bash
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.0-flash
+```
+
+Then open `/collections` and use the **AI Stylist** section to get product recommendations from your local catalog.
+
+Optional OpenAI mode:
+
+```bash
+AI_PROVIDER=openai
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4.1-mini
+```
+
 ---
 
 ## 📁 Project Structure

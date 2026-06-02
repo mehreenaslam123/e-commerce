@@ -1,10 +1,41 @@
 import { motion } from 'framer-motion';
+import { useMemo, useState } from 'react';
 import { Navbar } from '../layouts/Navbar';
 import { ProductCard } from '../components/ecommerce/ProductCard';
 import { PRODUCTS } from '../constants/mockData';
+import { getStylistRecommendations } from '@/api';
 
 export const Collections = () => {
   const categories = ['All', 'Apparel', 'Accessories', 'Outerwear'];
+  const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [aiAnswer, setAiAnswer] = useState('');
+  const [recommendedIds, setRecommendedIds] = useState<string[]>([]);
+  const [aiError, setAiError] = useState('');
+
+  const recommendedProducts = useMemo(
+    () => PRODUCTS.filter((product) => recommendedIds.includes(product.id)),
+    [recommendedIds]
+  );
+
+  const handleAskStylist = async () => {
+    if (!prompt.trim()) return;
+
+    setIsLoading(true);
+    setAiError('');
+    setAiAnswer('');
+    setRecommendedIds([]);
+
+    try {
+      const result = await getStylistRecommendations(prompt, PRODUCTS);
+      setAiAnswer(result.answer);
+      setRecommendedIds(result.recommendedProductIds);
+    } catch (error) {
+      setAiError(error instanceof Error ? error.message : 'Could not get AI recommendations right now.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -40,6 +71,49 @@ export const Collections = () => {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-y border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl font-light mb-4">AI Stylist</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Tell us what you are shopping for and get quick recommendations from the current catalog.
+          </p>
+          <div className="flex flex-col md:flex-row gap-3">
+            <input
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              placeholder="Example: I need a smart casual outfit under $200"
+              className="flex-1 border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-black"
+            />
+            <button
+              onClick={handleAskStylist}
+              disabled={isLoading}
+              className="bg-black text-white px-6 py-2 text-sm uppercase tracking-widest disabled:opacity-70"
+            >
+              {isLoading ? 'Thinking...' : 'Ask AI'}
+            </button>
+          </div>
+
+          {aiAnswer && (
+            <div className="mt-4 text-sm text-gray-700 leading-relaxed">{aiAnswer}</div>
+          )}
+
+          {aiError && (
+            <div className="mt-4 text-sm text-red-600">{aiError}</div>
+          )}
+
+          {!!recommendedProducts.length && (
+            <div className="mt-8">
+              <h3 className="text-lg font-light mb-4">Recommended For You</h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                {recommendedProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
